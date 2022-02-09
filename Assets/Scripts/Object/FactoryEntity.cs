@@ -5,8 +5,9 @@ using UnityEngine;
 
 public abstract class FactoryEntity : MonoBehaviour
 {
-	[SerializeField] private Storage storage;
-	[SerializeField] private AbstractThing thing;
+	[SerializeField] private Storage _storage;
+	[SerializeField] private AbstractThing _thing;
+	[SerializeField] private Transform _releasePosition;
 
 	private int _productionSpeed;
 	public virtual int ProductionSpeed
@@ -17,13 +18,14 @@ public abstract class FactoryEntity : MonoBehaviour
 
 	private void Start()
 	{
-		Debug.Log("Начали");
 		Product();
 	}
 
 	private async void Product()
 	{
 		await Task.Delay(ProductionSpeed * 1000);
-		Debug.Log(thing);
+		var obj = Instantiate(_thing, _releasePosition.position, Quaternion.identity);
+		obj.Move(transform.position, _storage.EmptyPosition);
+		//Debug.Log(_thing);
 	}
 }
