@@ -10,6 +10,8 @@ public abstract class FactoryEntity : MonoBehaviour
 	[SerializeField] private Transform _releasePosition;
 
 	private int _productionSpeed;
+	private bool _isWork = true;
+
 	public virtual int ProductionSpeed
 	{
 		get { return _productionSpeed; }
@@ -19,13 +21,35 @@ public abstract class FactoryEntity : MonoBehaviour
 	private void Start()
 	{
 		Product();
+		_storage.PositionAppeared += Reboot;
+		_storage.Stop += StopProduction;
 	}
 
-	private async void Product()
+	public virtual async void Product()
 	{
 		await Task.Delay(ProductionSpeed * 1000);
-		var obj = Instantiate(_thing, _releasePosition.position, Quaternion.identity);
-		obj.Move(transform.position, _storage.EmptyPosition);
-		//Debug.Log(_thing);
+		if (_isWork)
+		{
+			var obj = Instantiate(_thing, _releasePosition.position, Quaternion.identity);
+			_storage.AddThing(obj);
+			obj.Move(transform.position, _storage.EmptyPosition);
+			if (_storage.CountThings < _storage.Capacity)
+			{
+				Product();
+			}
+
+		}
+	}
+
+	public void StopProduction()
+	{
+		Debug.Log("Остановили производство");
+		_isWork = false;
+	}
+
+	private void Reboot()
+	{
+		_isWork = true;
+		Product();
 	}
 }

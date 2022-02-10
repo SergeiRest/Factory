@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class SmallFactory : FactoryEntity
 {
-	public override int ProductionSpeed => 5;
+	public override int ProductionSpeed => 3;
 }
