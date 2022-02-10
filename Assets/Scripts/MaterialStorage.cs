@@ -17,6 +17,7 @@ public class MaterialStorage : MonoBehaviour
 
 	public delegate void CapacityChanged(MaterialStorage storage);
 	public CapacityChanged OnCapacityChanged;
+	public CapacityChanged OnResourceEnd;
 
 	public async void AddItem(AbstractThing thing)
 	{
@@ -32,5 +33,9 @@ public class MaterialStorage : MonoBehaviour
 		AbstractThing removingThing = _things[Count - 1];
 		_things.Remove(removingThing);
 		Destroy(removingThing.gameObject);
+		if(Count == 0)
+		{
+			OnResourceEnd?.Invoke(this);
+		}
 	}
 }

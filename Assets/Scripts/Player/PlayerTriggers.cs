@@ -45,7 +45,6 @@ public class PlayerTriggers : MonoBehaviour
 	{
 		if (storage.Count < storage.Capacity && _inventory.Count > 0)
 		{
-			Debug.Log(_inventory.Count);
 			for(int i = 0; i < _inventory.Count; i++)
 			{
 				AbstractThing thing = _inventory.Things[i];

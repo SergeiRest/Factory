@@ -26,13 +26,11 @@ public class PlayerInventory : MonoBehaviour
 
 	public void RemoveThing(AbstractThing thing)
 	{
-		//AbstractThing current = _things[_countThings - 1];
 		_things.Remove(thing);
 		thing.transform.SetParent(null);
 		_countThings--;
 		Vector3 newPosition = new Vector3(_inventoryPlace.position.x, _inventoryPlace.position.y - thing.transform.localScale.y, _inventoryPlace.position.z);
 		_inventoryPlace.position = newPosition;
-		//return thing;
 	}
 
 	public bool GetAvailableForAdding()
