@@ -41,7 +41,6 @@ public class Storage : MonoBehaviour
 		_things.Remove(current);
 		Vector3 newPosition = new Vector3(_emptyPosition.position.x, _emptyPosition.position.y - current.transform.localScale.y, _emptyPosition.position.z);
 		_emptyPosition.position = newPosition;
-		//PositionAppeared?.Invoke();
 		return current;
 	}
 }

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Wood : AbstractThing
 {
-    
+	public override ThingType Type => ThingType.Wood;
 }

@@ -18,7 +18,7 @@ public abstract class FactoryEntity : MonoBehaviour
 		protected set { _productionSpeed = value; }
 	}
 
-	private void Start()
+	protected virtual void Start()
 	{
 		Product();
 		_storage.PositionAppeared += Reboot;
@@ -37,7 +37,6 @@ public abstract class FactoryEntity : MonoBehaviour
 			{
 				Product();
 			}
-
 		}
 	}
 

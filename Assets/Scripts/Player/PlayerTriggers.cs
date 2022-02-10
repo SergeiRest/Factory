@@ -16,6 +16,11 @@ public class PlayerTriggers : MonoBehaviour
 			_playerMovement.StopMove();
 			FillingInventory(storage);
 		}
+		else if(other.TryGetComponent(out MaterialStorage materialStorage))
+		{
+			_playerMovement.StopMove();
+			ClearingInventory(materialStorage);
+		}
 	}
 
 	private async void FillingInventory(Storage storage)
@@ -31,12 +36,38 @@ public class PlayerTriggers : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("Отпустили");
 			_playerMovement.StartMove();
 			storage.PositionAppeared?.Invoke();
 		}
-			
+	}
 
-		
+	private async void ClearingInventory(MaterialStorage storage)
+	{
+		if (storage.Count < storage.Capacity && _inventory.Count > 0)
+		{
+			Debug.Log(_inventory.Count);
+			for(int i = 0; i < _inventory.Count; i++)
+			{
+				AbstractThing thing = _inventory.Things[i];
+				if (thing.Type == storage.NeccesaryType)
+				{
+					_inventory.RemoveThing(thing);
+					storage.AddItem(thing);
+					await System.Threading.Tasks.Task.Delay(2000);
+					ClearingInventory(storage);
+				}
+				else
+				{
+					_playerMovement.StartMove();
+					break;
+				}
+					
+			}
+		}
+		else
+		{
+			storage.OnCapacityChanged?.Invoke(storage);
+			_playerMovement.StartMove();
+		}
 	}
 }
