@@ -22,10 +22,15 @@ public class MediumFactory : FactoryEntity
 			_materialStorage.RemoveThing();
 			base.Product();
 		}
+		else
+		{
+			OnFactoryStopped?.Invoke($"Не хватает {_materialStorage.NeccesaryType}");
+		}
 	}
 
 	private void MaterialStorageChanged(MaterialStorage storage)
 	{
+		OnFactoryReboot?.Invoke("");
 		_isWorking = true;
 		Product();
 	}

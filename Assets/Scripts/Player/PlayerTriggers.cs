@@ -45,27 +45,27 @@ public class PlayerTriggers : MonoBehaviour
 	{
 		if (storage.Count < storage.Capacity && _inventory.Count > 0)
 		{
-			for(int i = 0; i < _inventory.Count; i++)
+			AbstractThing thing = _inventory.GetThing();
+			if (thing.Type == storage.NeccesaryType)
 			{
-				AbstractThing thing = _inventory.Things[i];
-				if (thing.Type == storage.NeccesaryType)
-				{
-					_inventory.RemoveThing(thing);
-					storage.AddItem(thing);
-					await System.Threading.Tasks.Task.Delay(2000);
-					ClearingInventory(storage);
-				}
-				else
-				{
-					_playerMovement.StartMove();
-					break;
-				}
-					
+				_inventory.RemoveThing(thing);
+				storage.AddItem(thing);
+				await System.Threading.Tasks.Task.Delay(2000);
+				ClearingInventory(storage);
 			}
+			else
+			{
+				_playerMovement.StartMove();
+			}
+					
+		}
+		else if(storage.Count > 0)
+		{
+			storage.OnCapacityChanged?.Invoke(storage);
+			_playerMovement.StartMove();
 		}
 		else
 		{
-			storage.OnCapacityChanged?.Invoke(storage);
 			_playerMovement.StartMove();
 		}
 	}

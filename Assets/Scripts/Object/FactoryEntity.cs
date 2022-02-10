@@ -12,6 +12,10 @@ public abstract class FactoryEntity : MonoBehaviour
 	private int _productionSpeed;
 	private bool _isWork = true;
 
+	public delegate void FactoryDelegate(string text);
+	public FactoryDelegate OnFactoryStopped;
+	public FactoryDelegate OnFactoryReboot;
+
 	public virtual int ProductionSpeed
 	{
 		get { return _productionSpeed; }
@@ -37,6 +41,10 @@ public abstract class FactoryEntity : MonoBehaviour
 			{
 				Product();
 			}
+			else
+			{
+				OnFactoryStopped?.Invoke("Склад заполнился");
+			}
 		}
 	}
 
@@ -49,6 +57,7 @@ public abstract class FactoryEntity : MonoBehaviour
 	private void Reboot()
 	{
 		_isWork = true;
+		OnFactoryReboot?.Invoke("");
 		Product();
 	}
 }

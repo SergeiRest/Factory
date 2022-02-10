@@ -19,9 +19,15 @@ public class PlayerInventory : MonoBehaviour
 	{
 		_countThings++;
 		_things.Add(item);
-		Vector3 newPosition = new Vector3(_inventoryPlace.position.x, _inventoryPlace.position.y + item.transform.localScale.y, _inventoryPlace.position.z);
-		_inventoryPlace.position = newPosition;
+		Vector3 newPosition = new Vector3(_inventoryPlace.localPosition.x, _inventoryPlace.localPosition.y + item.transform.localScale.y, _inventoryPlace.localPosition.z);
+		_inventoryPlace.localPosition = newPosition;
 		item.transform.SetParent(this.transform);
+		item.transform.localRotation = Quaternion.Euler(0, 180, 0);
+	}
+
+	public AbstractThing GetThing()
+	{
+		return _things[_things.Count - 1];
 	}
 
 	public void RemoveThing(AbstractThing thing)
@@ -29,8 +35,8 @@ public class PlayerInventory : MonoBehaviour
 		_things.Remove(thing);
 		thing.transform.SetParent(null);
 		_countThings--;
-		Vector3 newPosition = new Vector3(_inventoryPlace.position.x, _inventoryPlace.position.y - thing.transform.localScale.y, _inventoryPlace.position.z);
-		_inventoryPlace.position = newPosition;
+		Vector3 newPosition = new Vector3(_inventoryPlace.localPosition.x, _inventoryPlace.localPosition.y - thing.transform.localScale.y, _inventoryPlace.localPosition.z);
+		_inventoryPlace.localPosition = newPosition;
 	}
 
 	public bool GetAvailableForAdding()

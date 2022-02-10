@@ -9,6 +9,7 @@ public class BigFactory : FactoryEntity
 
 	private List<MaterialStorage> _emptyStorages = new List<MaterialStorage>();
 	private List<MaterialStorage> _storagesWithThings = new List<MaterialStorage>();
+	private string neccessaryThings = "Необходимо:";
 
 	private bool _isWorking = false;
 	public override int ProductionSpeed => 5;
@@ -18,27 +19,36 @@ public class BigFactory : FactoryEntity
 		foreach(var storage in _materialStorage)
 		{
 			_emptyStorages.Add(storage);
+			neccessaryThings += $" {storage.NeccesaryType}";
 			storage.OnCapacityChanged += RemoveFomEmptyList;
 		}
+		foreach (var storage in _materialStorage)
+		{
+			_storagesWithThings.Add(storage);
+		}
+		OnFactoryStopped?.Invoke(neccessaryThings);
 		base.Start();
+		neccessaryThings = "Необходимо:";
 	}
 
 	public override void Product()
 	{
-		if(_emptyStorages.Count == 0)
+		if (_emptyStorages.Count == 0)
 		{
-			Debug.Log("Можем начать");
-			foreach (MaterialStorage materialStorage in _storagesWithThings)
+			OnFactoryReboot?.Invoke("");
+			for (int i = 0; i < _storagesWithThings.Count; i++)
 			{
-				materialStorage.RemoveThing();
-				if(materialStorage.Count == 0)
+				_storagesWithThings[i].RemoveThing();
+				if (_storagesWithThings[i].Count <= 0)
 				{
-					_storagesWithThings.Remove(materialStorage);
-					_emptyStorages.Add(materialStorage);
+					_emptyStorages.Add(_storagesWithThings[i]);
+					neccessaryThings += $" {_storagesWithThings[i].NeccesaryType}";
 				}
 			}
 			base.Product();
 		}
+		else
+			OnFactoryStopped?.Invoke(neccessaryThings);
 	}
 
 	private void MaterialStorageChanged(MaterialStorage storage)
@@ -49,15 +59,25 @@ public class BigFactory : FactoryEntity
 
 	private void RemoveFomEmptyList(MaterialStorage storage)
 	{
+		MaterialStorage current = null;
 		for(int i = 0; i < _emptyStorages.Count; i++)
 		{
-			if (storage.NeccesaryType == _emptyStorages[i].NeccesaryType)
+			if(i == 0)
 			{
-				_storagesWithThings.Add(_emptyStorages[i]);
-				Debug.Log("Количество элементов в ящике для материалов: " + _emptyStorages[i].Count);
-				_emptyStorages.Remove(_emptyStorages[i]);
+				neccessaryThings = "Необходимо";
+			}
+			if (storage.NeccesaryType != _emptyStorages[i].NeccesaryType)
+			{
+				neccessaryThings += $" {_emptyStorages[i].NeccesaryType}";
+				if(i+ 1 != _emptyStorages.Count)
+					continue;
+			}
+			current = _emptyStorages[i];
+				
+			if (i + 1 == _emptyStorages.Count)
+			{
+				_emptyStorages.Remove(current);
 				Product();
-				break;
 			}
 		}
 	}
